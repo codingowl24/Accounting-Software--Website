@@ -1,0 +1,16 @@
+#logo {
+	height: 300%;
+margin-top: -15px;
+margin-left: 72%;	
+}
+
+.btn-success {
+    color: #FFF;
+    background-color: rgb(29, 158, 158);
+    border-color: #4CAE9D;
+   }
+   
+#page-wrapper {
+    position: inherit;
+    margin: 0px;
+   }

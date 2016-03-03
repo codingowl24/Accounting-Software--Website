@@ -1,0 +1,545 @@
+<?php 
+include 'session.php';
+include 'config_test.php';
+include 'Config.php';
+include 'common.php';
+$_SESSION['submission'] = False;
+$_SESSION['count'] = 0;
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - TMT Finance</title>
+
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/local.css" />
+    <link href="css/dashboard.css" rel="stylesheet">
+    <link href="../dist/css/hint.css" rel="stylesheet">
+    
+
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <!-- <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script> -->
+    <script type="text/javascript" src="../bootstrap-multiselect-master/dist/js/bootstrap-multiselect.js"></script> 
+     <script type="text/javascript" src="../dist/js/sb-admin-2.js"></script>		     
+	<link rel="stylesheet" href="../bootstrap-multiselect-master/dist/css/bootstrap-multiselect.css" type="text/css"/>
+	
+
+    <!-- you need to include the shieldui css and js assets in order for the charts to work -->
+
+    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/js/gridData.js"></script>
+    <script type="text/javascript" src="../datepicker/js/bootstrap-datepicker.js"></script> 		     
+	<link rel="stylesheet" href="../datepicker/css/datepicker.css" type="text/css"/>
+</head>
+<body>
+
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="navbar-header">
+            	<a class="navbar-brand" href="homepage.php"><img id ="logo" src="images/tmt.png"></a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- <a class="navbar-brand" href="index.html">TMT</a> -->
+            </div>
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active"><a href="dashboard.php"><i class="fa fa-bar-chart-o fa-fw"></i> Dashboard</a></li>
+                    <!-- <li><a href="#"><i class="fa fa-tasks"></i> Accounts</a></li> -->
+                         <li>
+                            
+                                <li>
+                                    <a href="BalanceSheet.php">Balance Sheet</a>
+                                </li>
+                                <li>
+                                    <a href="IncomeStatement.php">Income Statement</a>
+                                </li>
+                                <li>
+                                    <a href="Ownersequity.php">Owner's Equity Statement</a>
+                                </li>
+                                 <li>
+                                    <a href="trialbalance.php">Trial Balance</a>
+                                </li>
+                            
+                            <!-- /.nav-second-level -->
+                        </li>
+						<li>
+                            <a href="transaction.php"><i class="fa fa-money"></i> Transactions <span class="fa arrow"></span></a>
+     					 <!-- /.nav-second-level -->
+                        </li>
+                        <li><a href="Journal.php">Journal</a></li>
+                    <!-- <li><a href="ledger.php">General Ledger</a></li> -->
+                   
+                    <li><a href="chart_of_accounts.php">View Chart of Accounts</a></li>
+                </ul>
+                               <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="dropdown messages-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> Messages <span class="badge"><?php echo unread_count()   ; ?></span> <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header"><?php echo unread_count(); ?> New Messages</li>
+                            <li class="message-preview">
+                                <a href="#">
+                                   
+                                </a>
+                            </li>
+                        
+                            <li class="message-preview">
+                                <a href="#">
+                                  
+                                </a>
+                            </li>
+                            <li><a href="inbox.php">Go to Inbox<span class="badge"></span></a></li>
+                        </ul>
+                    </li>
+                      <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><b><?php echo " $login_session";?></b><b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="<?php if(is_admin($login_id) === TRUE) {echo "admin.php";} if(is_manager($login_id) === TRUE){echo "manager.php";} if(is_user($login_id) === TRUE){echo "user_profile.php";} ?>"><i class="fa fa-user"></i> Profile</a></li>
+                            <li><a href="member.php"><i class="fa fa-gear"></i> Manage Account</a></li>
+                            <li class="divider"></li>
+                            <li><a href="log_out.php"><i class="fa fa-power-off"></i> Log Out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+			<div id="page-wrapper">
+				<div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Dashboard <small>Dashboard Home</small></h1>
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Welcome to your personal dashboard!
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="panel panel-default ">
+                        <div class="panel-body alert-info">
+                            <div class="col-xs-5">
+                                <i class="fa fa-truck fa-5x"></i>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                            	<?php
+                            		// $query = "Select Balance From cash";
+                            		// $cresults = mysqli_query($cxn, $query);
+                            		// $row1 = mysqli_fetch_assoc($cresults);
+                            		// $query = "Select Balance From accountsreceivable";
+                            		// $arresults = mysqli_query($cxn, $query);
+									// $row2 = mysqli_fetch_assoc($arresults);
+									// $query = "Select Balance From equipment";
+                            		// $eresults = mysqli_query($cxn, $query);
+									// $row3 = mysqli_fetch_assoc($eresults);
+// 									
+									// $query = "Select Balance From accountspayable";
+									// $lresults = mysqli_query($cxn, $query);
+									// $row4 = mysqli_fetch_assoc($lresults);
+									
+									$query = "Select accountname, balance from chartofaccounts where accountname = 'cash' or accountname = 'accounts receivable'";
+									$result = mysqli_query($cxn, $query);
+									
+									while($row = mysqli_fetch_assoc($result)){
+										$total = $row['balance'];
+										
+										echo $total;
+										
+									}
+									
+									
+									// $ratio = 0.00;
+									// if ($row4['Balance'] != '0.00') {
+										// $ratio = ($row1['Balance'] + $row2['Balance'] + $row3['Balance'])/$row4['Balance'];
+										// echo "<p class='alerts-heading'>$ratio</p>";
+									//}									
+									
+                        		?>
+                                <p class="alerts-text">Current Ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="panel panel-default ">
+                        <div class="panel-body alert-info">
+                            <div class="col-xs-5">
+                                <i class="fa fa-money fa-5x"></i>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                                 <?php
+                            		$query = "Select Balance From cash";
+                            		$cresults = mysqli_query($cxn, $query);
+                            		$row1 = mysqli_fetch_assoc($cresults);
+									
+									$query = "Select Balance From accountspayable";
+									$lresults = mysqli_query($cxn, $query);
+									$row2 = mysqli_fetch_assoc($lresults);
+									
+									$ratio = 0.00;
+									if ($row2['Balance'] != '0.00') {
+										$ratio = $row1['Balance']/$row2['Balance'];	
+									}									
+									echo "<p class='alerts-heading'>$ratio</p>";
+                        		?>
+                                <p class="alerts-text">Quick Ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="panel panel-default ">
+                        <div class="panel-body alert-info">
+                            <div class="col-xs-5">
+                                <i class="fa fa-twitter fa-5x"></i>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                            	<?php
+                            		$query = "Select Balance From cash";
+                            		$cresults = mysqli_query($cxn, $query);
+                            		$row1 = mysqli_fetch_assoc($cresults);
+									
+									$query = "Select Balance From accountspayable";
+									$lresults = mysqli_query($cxn, $query);
+									$row2 = mysqli_fetch_assoc($lresults);
+									
+									$ratio = 0.00;
+									if ($row2['Balance'] != '0.00') {
+										$ratio = $row1['Balance']/$row2['Balance'];
+									}									
+									echo "<p class='alerts-heading'>$ratio</p>";
+                        		?>
+                                <p class="alerts-text">Cash Ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+			 <div class="row">
+                <div class="col-lg-3">
+                    <div class="panel panel-default ">
+                        <div class="panel-body alert-info">
+                            <div class="col-xs-5">
+                                <i class="fa fa-truck fa-5x"></i>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                            	<?php
+                            		$query = "Select Balance From cash";
+                            		$cresults = mysqli_query($cxn, $query);
+                            		$row1 = mysqli_fetch_assoc($cresults);
+                            		$query = "Select Balance From accountsreceivable";
+                            		$aresults = mysqli_query($cxn, $query);
+									$row2 = mysqli_fetch_assoc($arresults);
+									$query = "Select Balance From equipment";
+                            		$eresults = mysqli_query($cxn, $query);
+									$row3 = mysqli_fetch_assoc($eresults);
+									
+									$totalassets = $row1['Balance'] + $row2['Balance'] + $row3['Balance'];
+									
+									$query = "Select Balance From accountspayable";
+									$alresults = mysqli_query($cxn, $query);
+									$row4 = mysqli_fetch_assoc($alresults);
+									$query = "Select Balance From notespayable";
+									$nlresults = mysqli_query($cxn, $query);
+									$row5 = mysqli_fetch_assoc($nlresults);
+									
+									$ratio = 0.00;
+									if ($totalassets != 0.00) {
+										$ratio = ($row4['Balance'] + $row5['Balance'])/$totalassets;
+									}	
+									echo "<p class='alerts-heading'>$ratio</p>";
+                        		?>
+                                <p class="alerts-text">Debt Ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="panel panel-default ">
+                        <div class="panel-body alert-info">
+                            <div class="col-xs-5">
+                                <i class="fa fa-money fa-5x"></i>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                                 <?php
+                            		$query = "Select Balance From capital";
+                            		$cresults = mysqli_query($cxn, $query);
+                            		$row1 = mysqli_fetch_assoc($cresults);
+									
+									$query = "Select Balance From accountspayable";
+									$alresults = mysqli_query($cxn, $query);
+									$row2 = mysqli_fetch_assoc($alresults);
+									$query = "Select Balance From notespayable";
+									$nlresults = mysqli_query($cxn, $query);
+									$row3 = mysqli_fetch_assoc($nlresults);
+									
+									if ($row1['Balance'] != '0.00') {
+										$ratio = ($row2['Balance']+$row3['Balance'])/$row1['Balance'];
+									}									
+									echo "<p class='alerts-heading'>$ratio</p>";
+                        		?>
+                                <p class="alerts-text">Debt-to-Equity Ratio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="panel panel-default ">
+                        <div class="panel-body alert-info">
+                            <div class="col-xs-5">
+                                <i class="fa fa-twitter fa-5x"></i>
+                            </div>
+                            <div class="col-xs-5 text-right">
+                            	<?php
+                            		$querya ="SELECT * FROM chartofaccounts WHERE Type= 'Revenues'";
+                                    $resultsa = mysqli_query($cxn, $querya) or die(mysqli_error($cxn));
+                                    $totalrevenues=0.00;
+                                    while ($rowA=mysqli_fetch_assoc($resultsa)){
+                                        if($rowA['Balance']!='0.00'){
+                                            $name = $rowA['AccountName'];
+                                            $b = getPeriodAmount($name);
+                                            $totalrevenues+= $b;
+                                        }
+                                     }
+									
+                                    $queryb ="SELECT * FROM chartofaccounts WHERE Type= 'Expenses'";
+                                    $resultsb = mysqli_query($cxn, $queryb) or die(mysqli_error($cxn));
+                                    $totalexpenses=0.00;
+                                    while ($rowB=mysqli_fetch_assoc($resultsb)){
+                                        if($rowB['Balance']!='0.00'){
+                                            $name = $rowB['AccountName'];
+                                            $b = getPeriodAmount($name);
+                                            $totalexpenses+=$b;
+                                        }
+                                    }
+									
+									$query = "Select Balance From cash";
+                            		$cresults = mysqli_query($cxn, $query);
+                            		$row1 = mysqli_fetch_assoc($cresults);
+                            		$query = "Select Balance From accountsreceivable";
+                            		$aresults = mysqli_query($cxn, $query);
+									$row2 = mysqli_fetch_assoc($arresults);
+									$query = "Select Balance From equipment";
+                            		$eresults = mysqli_query($cxn, $query);
+									$row3 = mysqli_fetch_assoc($eresults);
+									
+									$totalassets = $row1['Balance']+$row2['Balance']+$row3['Balance'];
+									$ratio = 0.00;
+									
+									if ($totalassets != 0.00) {
+										$ratio = ($totalrevenues-$totalexpenses)/$totalassets;
+									}
+									echo "<p class='alerts-heading'>$ratio</p>";									
+                        		?>
+                                <p class="alerts-text">Return on Assets</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Sales personnel Data</h3>
+                        </div>
+                        <div class="panel-body">
+                            <?php
+                            
+                            $querya = mysql_query("Select id, title, timestamp, user1, user2, message, userread from pm where user2 = '$login_username' and userread='0' order by timestamp desc");
+                            
+                            while ($row = mysql_fetch_array($querya))
+										{	
+										$mailid = $row['id'];
+										$u1 = $row['user1'];
+										$u2 = $row['user2'];		
+										$ti = $row['title'];
+										$timestamp = $row['timestamp'];
+										$mess = $row['message'];
+										$read = $row['userread'];
+										
+										$newDate = date("M-d-y", strtotime($timestamp));
+										$newTime = date("H:i:s", strtotime($timestamp));
+										
+										$StringURL = "readmail.php?mail=".$row['id'];
+										
+									echo "<table class='table' style='width: 680px' >";
+									echo "<tr>";
+									echo "<td class='col-lg-1' >
+									
+									
+								
+									 
+									
+									</td> ";
+									
+									
+									
+									
+									echo "<td class='col-lg-3' ><i class='fa fa-user'></i> $u1 </td>";
+									if($read == 0){
+									echo "<td class='col-lg-3' ><a href='$StringURL' onclick='openRequestedPopup();'><label>$ti</label> </a></td>";
+									}
+									else{
+									echo "<td class='col-lg-3' ><a href='$StringURL' onclick='openRequestedPopup();'>$ti </a></td>";
+									}	
+								//	echo "<td class='col-lg-1'>$lname </td>";
+									echo "<td class='col-lg-3' align:left' >$newDate $newTime </td>";
+									
+									 echo "</tr>";
+									 echo "</table>";
+								
+									}
+                            
+                            
+                            
+                            
+                            
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Logins per week</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="shieldui-chart2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-bar-chart-o"></i> Sales Data</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div id="shieldui-chart3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#wrapper -->
+
+    <script type="text/javascript">
+    <?php $h = 30; ?>
+        jQuery(function ($) {
+            var performance = [12, 43, 34, 22, 12, 33, 4, 17, 22, 34, 54, 67],
+                visits = [123, 323, 143, 132, 274, 223, 143, 156, 223, 223],
+                budget = [23, 19, 11, 34, 42, 52, 35, 22, 37, 45, 55, 57],
+                sales = [11, 9, 31, 34, 42, 52, 35, 22, 37, 45, 55, 57],
+                targets = [<?php echo $h; ?>, 19, 5, 4, 62, 62, 75, 12, 47, 55, 65, 67],
+                avrg = [117, 119, 95, 114, 162, 162, 175, 112, 147, 155, 265, 167];
+
+            $("#shieldui-chart1").shieldChart({
+                primaryHeader: {
+                    text: "Visitors"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [{
+                    seriesType: "area",
+                    collectionAlias: "Q Data",
+                    data: performance
+                }]
+            });
+
+            $("#shieldui-chart2").shieldChart({
+                primaryHeader: {
+                    text: "Login Data"
+                },
+                exportOptions: {
+                    image: false,
+                    print: false
+                },
+                dataSeries: [
+                    {
+                        seriesType: "polarbar",
+                        collectionAlias: "Logins",
+                        data: visits
+                    },
+                    {
+                        seriesType: "polarbar",
+                        collectionAlias: "Avg Visit Duration",
+                        data: avrg
+                    }
+                ]
+            });
+
+            $("#shieldui-chart3").shieldChart({
+                primaryHeader: {
+                    text: "Sales Data"
+                },
+                dataSeries: [
+                    {
+                        seriesType: "bar",
+                        collectionAlias: "Budget",
+                        data: budget
+                    },
+                    {
+                        seriesType: "bar",
+                        collectionAlias: "Sales",
+                        data: sales
+                    },
+                    {
+                        seriesType: "spline",
+                        collectionAlias: "Targets",
+                        data: targets
+                    }
+                ]
+            });
+
+            $("#shieldui-grid1").shieldGrid({
+                dataSource: {
+                    data: gridData
+                },
+                sorting: {
+                    multiple: true
+                },
+                paging: {
+                    pageSize: 7,
+                    pageLinksCount: 4
+                },
+                selection: {
+                    type: "row",
+                    multiple: true,
+                    toggle: false
+                },
+                columns: [
+                    { field: "id", width: "70px", title: "ID" },
+                    { field: "name", title: "Person Name" },
+                    { field: "company", title: "Company Name" },
+                    { field: "email", title: "Email Address", width: "270px" }
+                ]
+            });
+        });
+    </script>
+    
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.5/css/jquery.dataTables.css">
+  
+<!-- jQuery -->
+<script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+  
+<!-- DataTables -->
+<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.5/js/jquery.dataTables.js"></script>
+    
+</body>
+</html>

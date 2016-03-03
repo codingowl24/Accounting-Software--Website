@@ -1,0 +1,31 @@
+.carousel.item{
+	background-image: url('../images/hoffman.png');
+	background-repeat: repeat;
+	
+}
+
+#logo {
+	height: 190%;
+margin-top: -7px;
+margin-left: 5px;	
+}
+
+.slide-content{
+	color:white;
+	margin-top:200px;
+}
+
+.slide-content p{
+	font-size: 20px;
+	font-family: Calibri;	
+}
+
+.thumbnail{
+	margin-top:75px;
+	background-color: rgb(22, 167, 161);
+	padding: 6px;
+}
+
+.container{
+	font-size: 20px;
+}

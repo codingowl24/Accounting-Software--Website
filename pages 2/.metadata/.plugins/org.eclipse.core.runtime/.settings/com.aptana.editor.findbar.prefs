@@ -1,0 +1,3 @@
+FIND_BAR_DECORATOR_FIND_ENTRIES=\#\r\n\#Tue Mar 10 06\:36\:50 EDT 2015\r\n4\=line-height\\\: 20px\r\n3\=1.42857\r\n2\=wrapper\r\n1\=Notifications Panel\r\n0\=Journal\r\n
+FIND_BAR_DECORATOR_REPLACE_ENTRIES=\#\r\n\#Tue Mar 10 06\:36\:50 EDT 2015\r\n0\=General Ledger\r\n
+eclipse.preferences.version=1
